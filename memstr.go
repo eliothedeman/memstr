@@ -24,7 +24,7 @@ var (
 	// ErrInvalidSizeString means the string was formatted correctly, but the size was invalid
 	ErrInvalidSizeString = errors.New("invalid size string")
 
-	memMatcher = regexp.MustCompile("([0-9]+)([kKmMgGtT]*)")
+	memMatcher = regexp.MustCompile(`([0-9]+\.*[0-9]*)([kKmMgGtT]*)`)
 )
 
 // Parse given a string, parse the size of memory it represents ie "1K"= 1024 bytes
@@ -33,7 +33,7 @@ func Parse(s string) (int64, error) {
 	if len(match) < 2 {
 		return 0, ErrBadFormat
 	}
-	i, err := strconv.ParseInt(match[1], 10, 64)
+	i, err := strconv.ParseFloat(match[1], 64)
 	if err != nil {
 		return 0, err
 	}
@@ -50,7 +50,7 @@ func Parse(s string) (int64, error) {
 			n = 1
 		}
 	}
-	return n * i, nil
+	return int64(float64(n) * i), nil
 }
 
 // CompareMemory given two size strings, compare them.
