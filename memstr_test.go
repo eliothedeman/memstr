@@ -1,4 +1,4 @@
-package memString
+package memstr
 
 import "testing"
 
@@ -11,7 +11,7 @@ var (
 
 func TestParseMemory(t *testing.T) {
 	for k, v := range memoryTests {
-		n, err := ParseMemory(k)
+		n, err := Parse(k)
 		if err != nil {
 			t.Error(err)
 		}

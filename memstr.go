@@ -1,4 +1,4 @@
-package memString
+package memstr
 
 import (
 	"errors"
@@ -18,17 +18,20 @@ var (
 		"T": 1099511627776,
 	}
 
-	BAD_FORMAT          = errors.New("string_util: bad format")
-	INVALID_SIZE_STRING = errors.New("string_util: invalid size string")
+	// ErrBadFormat means the string was incorreclty formatted.
+	ErrBadFormat = errors.New("bad format")
+
+	// ErrInvalidSizeString means the string was formatted correctly, but the size was invalid
+	ErrInvalidSizeString = errors.New("invalid size string")
 
 	memMatcher = regexp.MustCompile("([0-9]+)([kKmMgGtT]*)")
 )
 
-// ParseMemory given a string, parse the size of memory it represents ie "1K"= 1024 bytes
-func ParseMemory(s string) (int64, error) {
+// Parse given a string, parse the size of memory it represents ie "1K"= 1024 bytes
+func Parse(s string) (int64, error) {
 	match := memMatcher.FindStringSubmatch(s)
 	if len(match) < 2 {
-		return 0, BAD_FORMAT
+		return 0, ErrBadFormat
 	}
 	i, err := strconv.ParseInt(match[1], 10, 64)
 	if err != nil {
@@ -59,8 +62,8 @@ func ParseMemory(s string) (int64, error) {
 func CompareMemory(x, y string) (int, error) {
 	var xi, yi int64
 	var err error
-	xi, err = ParseMemory(x)
-	yi, err = ParseMemory(y)
+	xi, err = Parse(x)
+	yi, err = Parse(y)
 
 	if err != nil {
 		return -2, err
